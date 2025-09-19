@@ -60,6 +60,42 @@
 				"type": "object",
 				"additionalProperties": false
 			},
+			"AdminLoginResponse": {
+				"properties": {},
+				"type": "object",
+				"additionalProperties": false
+			},
+			"ApiResponse_AdminLoginResponse_": {
+				"properties": {
+					"data": {
+						"anyOf": [
+							{
+								"$ref": "#/components/schemas/AdminLoginResponse"
+							},
+							{
+								"items": {
+									"$ref": "#/components/schemas/AdminLoginResponse"
+								},
+								"type": "array"
+							}
+						],
+						"nullable": true
+					},
+					"success": {
+						"type": "boolean"
+					},
+					"message": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"data",
+					"success",
+					"message"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
 			"AdminAuthSchema": {
 				"properties": {
 					"email": {
@@ -153,8 +189,15 @@
 			"post": {
 				"operationId": "Create",
 				"responses": {
-					"204": {
-						"description": "No content"
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ApiResponse_AdminLoginResponse_"
+								}
+							}
+						}
 					}
 				},
 				"tags": [
