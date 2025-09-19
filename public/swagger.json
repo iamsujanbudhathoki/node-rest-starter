@@ -1,0 +1,188 @@
+{
+	"openapi": "3.0.0",
+	"components": {
+		"examples": {},
+		"headers": {},
+		"parameters": {},
+		"requestBodies": {},
+		"responses": {},
+		"schemas": {
+			"MediaType": {
+				"enum": [
+					"PROFILE_IMAGE",
+					"PRODUCT_IMAGE",
+					"CAROUSEL_IMAGE",
+					"STORE_LOGO",
+					"BLOG_THUMBNAIL",
+					"CAREER_CV"
+				],
+				"type": "string"
+			},
+			"Media": {
+				"properties": {
+					"id": {
+						"type": "string"
+					},
+					"createdAt": {
+						"type": "string",
+						"format": "date-time"
+					},
+					"deletedAt": {
+						"type": "string",
+						"format": "date-time"
+					},
+					"mimeType": {
+						"type": "string"
+					},
+					"name": {
+						"type": "string"
+					},
+					"fileSize": {
+						"type": "string"
+					},
+					"mediaType": {
+						"$ref": "#/components/schemas/MediaType"
+					},
+					"path": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"id",
+					"createdAt",
+					"deletedAt",
+					"mimeType",
+					"name",
+					"fileSize",
+					"mediaType",
+					"path"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"AdminAuthSchema": {
+				"properties": {
+					"email": {
+						"type": "string"
+					},
+					"password": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"email",
+					"password"
+				],
+				"type": "object",
+				"additionalProperties": false
+			}
+		},
+		"securitySchemes": {}
+	},
+	"info": {
+		"title": "rest-nodejs-starter",
+		"version": "1.0.0",
+		"license": {
+			"name": "ISC"
+		},
+		"contact": {}
+	},
+	"paths": {
+		"/media": {
+			"post": {
+				"operationId": "Upload",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"anyOf": [
+										{
+											"$ref": "#/components/schemas/Media"
+										},
+										{
+											"properties": {
+												"message": {
+													"type": "string"
+												},
+												"status": {
+													"type": "string"
+												}
+											},
+											"required": [
+												"message",
+												"status"
+											],
+											"type": "object"
+										}
+									]
+								}
+							}
+						}
+					}
+				},
+				"security": [],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"multipart/form-data": {
+							"schema": {
+								"type": "object",
+								"properties": {
+									"file": {
+										"type": "string",
+										"format": "binary"
+									},
+									"mediaType": {
+										"type": "string"
+									}
+								},
+								"required": [
+									"file",
+									"mediaType"
+								]
+							}
+						}
+					}
+				}
+			}
+		},
+		"/admin/auth": {
+			"post": {
+				"operationId": "Create",
+				"responses": {
+					"204": {
+						"description": "No content"
+					}
+				},
+				"tags": [
+					"Admin Auth System"
+				],
+				"security": [],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/AdminAuthSchema"
+							}
+						}
+					}
+				}
+			}
+		}
+	},
+	"servers": [
+		{
+			"url": "https://abc.com/api/v1",
+			"description": "prouduction server"
+		},
+		{
+			"url": "http://localhost:4000/api/v1",
+			"description": "Development server"
+		}
+	]
+}
