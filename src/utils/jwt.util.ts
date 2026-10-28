@@ -62,6 +62,9 @@ export class JwtUtil {
     }
 
     const [encodedHeader, encodedPayload, encodedSignature] = parts;
+    if (!encodedHeader || !encodedPayload || !encodedSignature) {
+      throw AppError.unAuthorized(messages.invalidToken);
+    }
     const signingInput = `${encodedHeader}.${encodedPayload}`;
 
     const expectedSignature = base64UrlEncode(

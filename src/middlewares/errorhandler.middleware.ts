@@ -1,19 +1,20 @@
 import { NextFunction, Request, Response } from 'express';
 import multer from 'multer';
 import { ValidateError } from 'tsoa';
+import { logger } from '../config/logger.config';
 import messages from '../constants/messages.constants';
 import { AppError } from '../utils/appError.util';
 
 const errorHandler = (
-  error: any,
+  error: unknown,
   _req: Request,
   res: Response,
   _next: NextFunction,
 ) => {
   if (error instanceof AppError) {
-    return res.status(+error?.statusCode || 400).json({
+    return res.status(error.statusCode).json({
       success: false,
-      message: error?.message ?? 'Internal server error',
+      message: error.message,
       data: null,
     });
   }
@@ -22,7 +23,7 @@ const errorHandler = (
     return res.status(400).json({
       success: false,
       message: 'Validation Failed',
-      details: error?.fields,
+      details: error.fields,
       data: null,
     });
   }
@@ -36,7 +37,7 @@ const errorHandler = (
     });
   }
 
-  console.error('Error', error);
+  logger.error('Unhandled server error:', error);
   return res.status(500).json({
     success: false,
     message: messages.serverError,

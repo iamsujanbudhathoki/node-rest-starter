@@ -29,6 +29,22 @@ import {
 } from '../../schemas/contact.schema';
 import { ContactService } from '../../services/contact/contact.service';
 
+function getClientIp(req: express.Request): string | undefined {
+  const cfIp = req.headers['cf-connecting-ip'];
+  if (typeof cfIp === 'string' && cfIp.trim().length > 0) {
+    return cfIp.trim();
+  }
+  const xForwardedFor = req.headers['x-forwarded-for'];
+  if (typeof xForwardedFor === 'string' && xForwardedFor.trim().length > 0) {
+    const ips = xForwardedFor.split(',');
+    const firstIp = ips[0];
+    if (firstIp && firstIp.trim().length > 0) {
+      return firstIp.trim();
+    }
+  }
+  return req.ip;
+}
+
 @Route('contact')
 @Tags('Contact Us')
 @autoInjectable()
@@ -48,10 +64,7 @@ export class ContactController extends Controller {
     @Request() req: express.Request,
   ): Promise<ApiResponse<ContactUsEntity>> {
     this.setStatus(201);
-    const remoteIp =
-      (req.headers['cf-connecting-ip'] as string) ||
-      (req.headers['x-forwarded-for'] as string)?.split(',')[0]?.trim() ||
-      req.ip;
+    const remoteIp = getClientIp(req);
     const data = await this.contactService!.create(body, remoteIp);
     return {
       data,

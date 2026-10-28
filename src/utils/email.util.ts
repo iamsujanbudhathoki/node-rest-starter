@@ -78,8 +78,9 @@ class EmailUtil {
           metadata,
         });
         emailLog = await repo.save(emailLog);
-      } catch (dbErr: any) {
-        logger.error(`Failed to persist email log: ${dbErr?.message}`);
+      } catch (dbErr: unknown) {
+        const message = dbErr instanceof Error ? dbErr.message : String(dbErr);
+        logger.error(`Failed to persist email log: ${message}`);
       }
     }
 
@@ -110,20 +111,24 @@ class EmailUtil {
 
       logger.info(`Email sent successfully (${mailType} -> ${to})`);
       return emailLog;
-    } catch (error: any) {
+    } catch (error: unknown) {
+      const errorMessage =
+        error instanceof Error ? error.message : String(error);
       logger.error(
-        `Failed to send email (${mailType} -> ${to}): ${error?.message}`,
+        `Failed to send email (${mailType} -> ${to}): ${errorMessage}`,
       );
 
       if (emailLog && AppDataSource.isInitialized) {
         try {
           const repo = AppDataSource.getRepository(EmailLogEntity);
           emailLog.status = EmailDeliveryStatus.FAILED;
-          emailLog.errorMessage = error?.message || 'Unknown SMTP error';
+          emailLog.errorMessage = errorMessage;
           await repo.save(emailLog);
-        } catch (saveErr: any) {
+        } catch (saveErr: unknown) {
+          const saveErrorMessage =
+            saveErr instanceof Error ? saveErr.message : String(saveErr);
           logger.error(
-            `Failed to update email log failure status: ${saveErr?.message}`,
+            `Failed to update email log failure status: ${saveErrorMessage}`,
           );
         }
       }

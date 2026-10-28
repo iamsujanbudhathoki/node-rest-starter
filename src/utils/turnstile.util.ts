@@ -53,9 +53,12 @@ export class TurnstileUtil {
       const result = (await response.json()) as TurnstileVerifyResponse;
 
       if (!result.success) {
-        logger.warn(
-          `Cloudflare Turnstile verification failed: ${(result['error-codes'] || []).join(', ')}`,
-        );
+        const errorCodes = result['error-codes'];
+        const errorDetail =
+          Array.isArray(errorCodes) && errorCodes.length > 0
+            ? errorCodes.join(', ')
+            : 'unspecified error';
+        logger.warn(`Cloudflare Turnstile verification failed: ${errorDetail}`);
         throw AppError.badRequest(messages.turnstileFailed);
       }
 

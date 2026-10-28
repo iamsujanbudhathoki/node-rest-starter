@@ -10,6 +10,7 @@ import {
 } from '../../schemas/contact.schema';
 import { AppError } from '../../utils/appError.util';
 import emailUtil from '../../utils/email.util';
+import { logger } from '../../config/logger.config';
 import { paginateResponse, skipTakeMaker } from '../../utils/pageAndLimit';
 import { TurnstileUtil } from '../../utils/turnstile.util';
 
@@ -31,7 +32,10 @@ export class ContactService {
     const contact = this.contactRepo.create({
       name: data.name.trim(),
       email: data.email.trim().toLowerCase(),
-      company: data.company?.trim() || undefined,
+      company:
+        data.company && data.company.trim().length > 0
+          ? data.company.trim()
+          : undefined,
       topic: data.topic,
       message: data.message.trim(),
       status: ContactStatus.NEW,
@@ -50,7 +54,12 @@ export class ContactService {
         message: saved.message,
         submittedAt: saved.createdAt,
       })
-      .catch(() => {});
+      .catch((error) => {
+        logger.error(
+          `Failed to dispatch contact emails for enquiry ID ${saved.id}:`,
+          error,
+        );
+      });
 
     return saved;
   }

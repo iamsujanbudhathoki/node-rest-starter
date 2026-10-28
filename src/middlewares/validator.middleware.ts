@@ -19,11 +19,15 @@ export class RequestValidator {
           // nested errors
           if (errorItem.children && errorItem.children.length > 0) {
             for (const child of errorItem.children) {
-              rawErrors.push(...Object.values(child.constraints ?? {}));
+              if (child.constraints) {
+                rawErrors.push(...Object.values(child.constraints));
+              }
             }
           }
           // non-nested
-          rawErrors.push(...Object.values(errorItem.constraints ?? {}));
+          if (errorItem.constraints) {
+            rawErrors.push(...Object.values(errorItem.constraints));
+          }
         }
 
         return res.status(400).json({ errors: rawErrors }); // send response and stop

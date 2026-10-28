@@ -31,7 +31,8 @@ export class LetterService {
     const letter = this.letterRepo.create({
       ...data,
       slug: data.slug.trim(),
-      isPublished: data.isPublished ?? true,
+      isPublished:
+        typeof data.isPublished === 'boolean' ? data.isPublished : true,
     });
     return await this.letterRepo.save(letter);
   }

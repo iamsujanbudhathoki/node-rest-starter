@@ -23,7 +23,7 @@ export class ProductService {
     const product = this.productRepo.create({
       ...data,
       slug: data.slug.trim(),
-      isActive: data.isActive ?? true,
+      isActive: typeof data.isActive === 'boolean' ? data.isActive : true,
     });
     return await this.productRepo.save(product);
   }

@@ -37,7 +37,7 @@ export class ProductController extends Controller {
   async getAllProducts(
     @Query() activeOnly?: boolean,
   ): Promise<ApiResponse<ProductEntity[]>> {
-    const data = await this.productService!.getAll(activeOnly ?? true);
+    const data = await this.productService!.getAll(activeOnly !== false);
     return {
       data,
       message: messages.dataFetched,
