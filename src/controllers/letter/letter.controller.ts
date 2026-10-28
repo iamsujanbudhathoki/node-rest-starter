@@ -13,7 +13,6 @@ import {
   SuccessResponse,
   Tags,
 } from 'tsoa';
-import { autoInjectable } from 'tsyringe';
 import { LetterKind } from '../../constants/appConstant';
 import messages from '../../constants/messages.constants';
 import { AdminPermission } from '../../entities/admin/Admin.entity';
@@ -28,10 +27,12 @@ import { LetterService } from '../../services/letter/letter.service';
 
 @Route('letters')
 @Tags('Stradmont Letters')
-@autoInjectable()
 export class LetterController extends Controller {
-  constructor(private letterService?: LetterService) {
+  private letterService: LetterService;
+
+  constructor(letterService?: LetterService) {
     super();
+    this.letterService = letterService || new LetterService();
   }
 
   @Get('/')

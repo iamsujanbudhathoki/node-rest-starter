@@ -15,7 +15,6 @@ import {
   SuccessResponse,
   Tags,
 } from 'tsoa';
-import { autoInjectable } from 'tsyringe';
 import { ContactStatus, ContactTopic } from '../../constants/appConstant';
 import messages from '../../constants/messages.constants';
 import { AdminPermission } from '../../entities/admin/Admin.entity';
@@ -47,10 +46,12 @@ function getClientIp(req: express.Request): string | undefined {
 
 @Route('contact')
 @Tags('Contact Us')
-@autoInjectable()
 export class ContactController extends Controller {
-  constructor(private contactService?: ContactService) {
+  private contactService: ContactService;
+
+  constructor(contactService?: ContactService) {
     super();
+    this.contactService = contactService || new ContactService();
   }
 
   @Post('/')

@@ -13,7 +13,6 @@ import {
   SuccessResponse,
   Tags,
 } from 'tsoa';
-import { autoInjectable } from 'tsyringe';
 import messages from '../../constants/messages.constants';
 import { AdminPermission } from '../../entities/admin/Admin.entity';
 import { ProductEntity } from '../../entities/product/Product.entity';
@@ -27,10 +26,12 @@ import { ProductService } from '../../services/product/product.service';
 
 @Route('products')
 @Tags('Products')
-@autoInjectable()
 export class ProductController extends Controller {
-  constructor(private productService?: ProductService) {
+  private productService: ProductService;
+
+  constructor(productService?: ProductService) {
     super();
+    this.productService = productService || new ProductService();
   }
 
   @Get('/')

@@ -8,7 +8,6 @@ import {
   Security,
   Tags,
 } from 'tsoa';
-import { autoInjectable } from 'tsyringe';
 import { EmailDeliveryStatus, MailType } from '../../constants/appConstant';
 import messages from '../../constants/messages.constants';
 import { EmailLogEntity } from '../../entities/email/EmailLog.entity';
@@ -17,7 +16,6 @@ import emailUtil from '../../utils/email.util';
 
 @Route('emails')
 @Tags('Email Logs')
-@autoInjectable()
 export class EmailController extends Controller {
   @Get('/')
   @Security('jwt')

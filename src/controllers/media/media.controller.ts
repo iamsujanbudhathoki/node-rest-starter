@@ -11,14 +11,12 @@ import {
   Tags,
   UploadedFile,
 } from 'tsoa';
-import { autoInjectable } from 'tsyringe';
 import { DotenvConfig } from '../../config/env.config';
 import { MediaType } from '../../constants/appConstant';
 import mediaService from '../../services/media/media.service';
 
 @Route('media')
 @Tags('Media')
-@autoInjectable()
 class MediaController extends Controller {
   @Post('/')
   @Security('jwt')
